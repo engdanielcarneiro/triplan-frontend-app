@@ -1,5 +1,7 @@
 import { FormEvent, useState } from "react"
+import { DateRange } from "react-day-picker"
 import { useNavigate } from "react-router-dom"
+import { api } from "../../lib/axios"
 import { ConfirmTripModal } from "./confirm-trip-modal"
 import { InviteGuestsModal } from "./invite-guests-modal"
 import { DestinationAndDateStep } from "./steps/destination-and-date-step"
@@ -11,6 +13,13 @@ export function CreateTripPage() {
   const [isGuestsInputOpen, setIsGuestsInputOpen] = useState(false)
   const [isGuestsModalOpen, setIsGuestsModalOpen] = useState(false)
   const [isConfirmTripModalOpen, setIsConfirmTripModalOpen] = useState(false)
+
+  const [destination, setDestination] = useState("")
+  const [ownerName, setOwnerName] = useState("")
+  const [ownerEmail, setOwnerEmail] = useState("")
+  const [eventStartAndEndDates, setEventStartAndEndDates] = useState<
+    DateRange | undefined
+  >()
 
   const [emailsToInvite, setEmailsToInvite] = useState([
     "daniel.alexandre97@hotmail.com",
@@ -63,7 +72,20 @@ export function CreateTripPage() {
 
   function createTrip(event: FormEvent<HTMLFormElement>): void {
     event.preventDefault()
-    navigate("/trips/123")
+    console.log(destination)
+    console.log(eventStartAndEndDates)
+    console.log(emailsToInvite)
+    console.log(ownerName)
+    console.log(ownerEmail)
+
+    api.post("/trips", {
+      destination,
+      starts_at: "",
+      ends_at: "",
+      emails_to_invite: [""],
+      owner_name: "",
+      owner_email: "",
+    })
   }
 
   return (
@@ -81,6 +103,9 @@ export function CreateTripPage() {
             isGuestsInputOpen={isGuestsInputOpen}
             closeGuestsInput={closeGuestsInput}
             openGuestsInput={openGuestsInput}
+            setDestination={setDestination}
+            eventStartAndEndDates={eventStartAndEndDates}
+            setEventStartAndEndDates={setEventStartAndEndDates}
           />
 
           {isGuestsInputOpen && (
@@ -119,6 +144,8 @@ export function CreateTripPage() {
         <ConfirmTripModal
           closeConfirmTripModal={closeConfirmTripModal}
           createTrip={createTrip}
+          setOwnerName={setOwnerName}
+          setOwnerEmail={setOwnerEmail}
         />
       )}
     </div>
